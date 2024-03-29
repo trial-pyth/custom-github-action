@@ -2,7 +2,6 @@ import { existsSync, promises } from "fs";
 import { logger } from "./logger";
 
 export async function prepareTargetDirectory(targetDir: string) {
-  const files = await promises.readdir(targetDir);
 
   if (existsSync(targetDir)) {
     const files = await promises.readdir(targetDir);
@@ -13,6 +12,4 @@ export async function prepareTargetDirectory(targetDir: string) {
   } else {
     await promises.mkdir(targetDir);
   }
-
-  process.chdir(targetDir); // Change working directory (always after directory checks)
 }
