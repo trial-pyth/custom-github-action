@@ -1,16 +1,42 @@
-import { existsSync, promises as fs } from "fs";
+import { existsSync, promises as fs, promises } from "fs";
 import { Command } from "commander";
 import path from "path";
 import prompts from "prompts";
 import { z } from "zod";
 import { logger } from "../utils/logger";
 import chalk from "chalk";
+import { promptForComponents } from "../utils/prompt-for-components";
+import ora from "ora";
+import { prepareTargetDirectory } from "../utils/prepare-target-dir";
+import { execa } from "execa"
 
 const initOptionsSchema = z.object({
   cwd: z.string(),
   yes: z.boolean(),
   name: z.optional(z.string()),
 });
+
+const custom_action = [
+  {
+    name: "javascript",
+    label: "JavaScript",
+  },
+  {
+    name: "docker",
+    label: "Docker",
+  },
+  {
+    name: "composite",
+    label: "Composite",
+  },
+]
+
+const dev_dependencies = [
+  "@types/nodes",
+  "typescript"
+]
+
+
 
 export const init = new Command()
   .name("init")
@@ -34,7 +60,51 @@ export const init = new Command()
       }
 
       const config = await promptForConfig(cwd);
+      // Prompt for JavaScript components (if JavaScript is selected)
+      const isJavascript = config.custom_action === "javascript";
+      if (isJavascript) {
+        const selectedComponents: string[] | undefined = await promptForComponents(isJavascript);
+        console.log("🚀 ~ .action ~ selectedComponents:", selectedComponents)
 
+        if (!selectedComponents?.length) {
+          logger.warn("No components selected. Exiting.")
+          process.exit(0)
+        }
+
+        if (!options.yes) {
+          const { proceed } = await prompts({
+            type: "confirm",
+            name: "proceed",
+            message: `Ready to install components and dependencies. Proceed?`,
+            initial: true,
+          })
+
+          if (!proceed) {
+            process.exit(0)
+          }
+        }
+
+        const spinner = ora(`Installing components...`).start()
+        const targetDir = path.join(
+          // Use provided cwd if available, otherwise default to process.cwd()
+          options.cwd || process.cwd(),
+          config.action_name
+        );
+        await prepareTargetDirectory(targetDir);
+
+        // Installation code within the for loop
+      for (const npm_package of selectedComponents) {
+        spinner.text = `Installing ${npm_package}...`;
+
+        try {
+          // Install package using execaCommand with target directory
+          await execaCommand("npm", ["install", npm_package], { cwd: targetDir });
+        } catch (error) {
+          logger.error(`Failed to install ${npm_package}: ${error}`);
+        }
+      }
+      
+      }
 
       logger.info("");
       logger.info(
@@ -51,22 +121,8 @@ export const init = new Command()
 export async function promptForConfig(cwd: string, skip = false) {
   const highlight = (text: string) => chalk.cyan(text);
 
-  const custom_action = [
-    {
-      name: "javascript",
-      label: "JavaScript",
-    },
-    {
-      name: "docker",
-      label: "Docker",
-    },
-    {
-      name: "composite",
-      label: "Composite",
-    },
-  ];
 
-  const validateName = (name:string) => {
+  const validateName = (name: string) => {
     // Adjusted regular expression to allow underscores and hyphens
     const isValid = /^[a-zA-Z0-9_-]+$/.test(name);
 
@@ -74,7 +130,7 @@ export async function promptForConfig(cwd: string, skip = false) {
       console.log("Invalid name. The name must not contain special characters or spaces, except for underscores and hyphens.");
       return false;
     }
-    
+
     return true;
   };
 
@@ -83,7 +139,7 @@ export async function promptForConfig(cwd: string, skip = false) {
       type: "text",
       name: "action_name",
       message: `What is the name of your action? `,
-      validate:(name:string) => validateName(name)
+      validate: (name: string) => validateName(name)
     },
     {
       type: "select",
@@ -103,11 +159,11 @@ export async function promptForConfig(cwd: string, skip = false) {
       initial: true,
       active: "yes",
       inactive: "no",
-    },
+    }
   ]);
 
-  
-  if (!skip) {
+
+  if (!skip && options.custom_action !== "javascript") {
     const { proceed } = await prompts({
       type: "confirm",
       name: "proceed",
