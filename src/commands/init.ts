@@ -9,6 +9,7 @@ import { promptForComponents } from "../utils/prompt-for-components";
 import ora from "ora";
 import { prepareTargetDirectory } from "../utils/prepare-target-dir";
 import { execa } from "execa"
+import { getPackageManager } from "../utils/get-package-manager";
 
 const initOptionsSchema = z.object({
   cwd: z.string(),
@@ -91,19 +92,28 @@ export const init = new Command()
           config.action_name
         );
         await prepareTargetDirectory(targetDir);
-
+        const packageManager = await getPackageManager(cwd || targetDir)
         // Installation code within the for loop
-      for (const npm_package of selectedComponents) {
-        spinner.text = `Installing ${npm_package}...`;
-
-        try {
-          // Install package using execaCommand with target directory
-          await execaCommand("npm", ["install", npm_package], { cwd: targetDir });
-        } catch (error) {
-          logger.error(`Failed to install ${npm_package}: ${error}`);
+        for (const npm_package of selectedComponents) {
+          spinner.text = `Installing ${npm_package}...`;
+          console.log("🚀 ~ .action ~ targetDir:", targetDir)
+          try {
+            // Install package using execaCommand with target directory
+            await execa(
+              packageManager,
+              [
+                "npm" ? "install" : "add",
+                npm_package,
+              ],
+              {
+                cwd: targetDir,
+              }
+            )
+          } catch (error) {
+            logger.error(`Failed to install ${npm_package}: ${error}`);
+          }
         }
-      }
-      
+
       }
 
       logger.info("");
