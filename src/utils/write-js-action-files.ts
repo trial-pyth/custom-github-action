@@ -39,6 +39,6 @@ export async function writeJavascriptActionFiles(isTypescript: boolean, targetDi
             logger.info("tsconfig.json file created successfully.");
         }
     } catch (error) {
-        logger.error("Error writing JSON files:", error);
+        logger.error("Error writing files:", error);
     }
 }

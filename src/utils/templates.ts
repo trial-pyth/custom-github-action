@@ -1,4 +1,4 @@
-export const GITIGNORE=`# Node.js and npm
+export const GITIGNORE = `# Node.js and npm
 node_modules/
 npm-debug.log
 *.log
@@ -47,8 +47,7 @@ lerna-debug.log*
 .pnpm-debug.log
 `
 
-
-export const JAVASCRIPT_YAML_TEMPLATE = (action_name:string) => {
+export const JAVASCRIPT_YAML_TEMPLATE = (action_name: string) => {
   return `name: ${action_name}
 description: ${action_name}
     
@@ -112,4 +111,32 @@ export const TYPESCRIPT_PACKAGE_JSON = (action_name: string) => {
     "dependencies": {
     }
   }`
+}
+
+export const DOCKER_ACTION_TEMPLATE = (action_name: string) => {
+  return `name: ${action_name}
+description: ${action_name}
+    
+runs:
+  using: 'docker'
+  main: 'Dockerfile'
+  args:
+    -`
+}
+
+export const DOCKERFILE = `FROM alpine:latest
+
+ENTRYPOINT ['/entrypoint.sh']`
+
+export const COMPOSITE_ACTION_TEMPLATE = (action_name: string) => {
+  return `name: '${action_name}'
+description: '${action_name}'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Greeting
+      run: echo "Hello custom github action"
+      shell: bash
+      env:`
 }

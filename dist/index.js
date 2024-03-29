@@ -1,4 +1,4 @@
-import{Command as B}from"commander";import M from"path";import O from"fs-extra";function x(){let e=M.join("package.json");return O.readJSONSync(e)}import{existsSync as Y}from"fs";import{Command as D}from"commander";import _ from"path";import h from"prompts";import{z as g}from"zod";import f from"chalk";var t={error(...e){console.log(f.red(...e))},warn(...e){console.log(f.yellow(...e))},info(...e){console.log(f.cyan(...e))},success(...e){console.log(f.green(...e))},break(){console.log("")}};import k from"chalk";import F from"prompts";var R=["@octokit/core","@actions/core","@actions/github","axios","node-fetch"];async function v(e){if(!e)return;let o=R.map(r=>({title:r,value:r,selected:!1}));return(await F({type:"multiselect",name:"components",message:"Which packages would you like to add?",hint:"Space to select. A to toggle all. Enter to submit.",instructions:!1,choices:o})).components}import V from"ora";import{existsSync as G,promises as P}from"fs";async function b(e){G(e)?(await P.readdir(e)).length>0&&(t.error(`Target directory ${e} is not empty. Please try again.`),process.exit(1)):await P.mkdir(e)}import{execa as J}from"execa";import{detect as L}from"@antfu/ni";async function j(e){let o=await L({programmatic:!0,cwd:e});return o==="yarn@berry"?"yarn":o==="pnpm@6"?"pnpm":o==="bun"?"bun":o??"npm"}import{promises as p}from"fs";import l from"path";var S=`# Node.js and npm
+import{Command as mo}from"commander";import G from"path";import K from"fs-extra";function T(){let o=G.join("package.json");return K.readJSONSync(o)}import{existsSync as to}from"fs";import{Command as ro}from"commander";import no from"path";import io from"prompts";import{z as d}from"zod";import g from"chalk";var t={error(...o){console.log(g.red(...o))},warn(...o){console.log(g.yellow(...o))},info(...o){console.log(g.cyan(...o))},success(...o){console.log(g.green(...o))},break(){console.log("")}};import so from"chalk";import{execa as S}from"execa";function y(o){typeof o=="string"&&(t.error(o),process.exit(1)),o instanceof Error&&(t.error(o.message),process.exit(1)),t.error("Something went wrong. Please try again."),process.exit(1)}import z from"prompts";var V=["@octokit/core","@actions/core","@actions/github","jest","axios","node-fetch"];async function P(){let o=V.map(n=>({title:n,value:n,selected:!1}));return(await z({type:"multiselect",name:"components",message:"Which packages would you like to add?",hint:"Space to select. A to toggle all. Enter to submit.",instructions:!1,choices:o})).components}import M from"chalk";import B from"prompts";import U from"ora";import Z from"path";import{existsSync as W,promises as A}from"fs";async function p(o){W(o)?(await A.readdir(o)).length>0&&(t.error(`Target directory ${o} is not empty. Please try again.`),process.exit(1)):await A.mkdir(o)}import{detect as H}from"@antfu/ni";async function E(o){let e=await H({programmatic:!0,cwd:o});return e==="yarn@berry"?"yarn":e==="pnpm@6"?"pnpm":e==="bun"?"bun":e??"npm"}import{promises as l}from"fs";import f from"path";var m=`# Node.js and npm
 node_modules/
 npm-debug.log
 *.log
@@ -45,12 +45,12 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log
-`,C=e=>`name: ${e}
-description: ${e}
+`,I=o=>`name: ${o}
+description: ${o}
     
 runs:
   using: 'node16'
-  main: 'dist/index.js'`,E=`{
+  main: 'dist/index.js'`,x=`{
     "compilerOptions": {
       "target": "es2019", // Or "esnext" for the latest
       "module": "esnext", // Or any of the allowed values per your environment
@@ -61,14 +61,14 @@ runs:
       "skipLibCheck": true,
       "moduleResolution": "node"
     }
-  }`,A=e=>`{
-    "name": "${e}",
+  }`,C=o=>`{
+    "name": "${o}",
     "version": "0.0.1",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
       "test": "echo \\"Error: no test specified\\" && exit 1",
-      "build": "ncc build lib/${e}.js"
+      "build": "ncc build lib/${o}.js"
     },
     "author": "",
     "license": "ISC",
@@ -79,14 +79,14 @@ runs:
     },
     "dependencies": {
     }
-  }`,T=e=>`{
-    "name": "${e}",
+  }`,j=o=>`{
+    "name": "${o}",
     "version": "0.0.1",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
       "test": "echo \\"Error: no test specified\\" && exit 1",
-      "build": "tsc && ncc build lib/${e}.js"
+      "build": "tsc && ncc build lib/${o}.js"
     },
     "author": "",
     "license": "ISC",
@@ -97,5 +97,23 @@ runs:
     },
     "dependencies": {
     }
-  }`;async function I(e,o,n){try{await p.writeFile(l.join(o,".gitignore"),S);let r=C(n),s=l.join(o,"action.yaml");await p.writeFile(s,r),t.info("action.yaml file created successfully.");let i=l.join(o,"src");await p.mkdir(i,{recursive:!0});let y='console.log("Hello custom github action");',m=l.join(o,"src",`${n}.${e?"ts":"js"}`);await p.writeFile(m,y),t.info(`src/${n}.${e?"ts":"js"} file created successfully.`);let u=e?T(n):A(n),c=l.join(o,"package.json");if(await p.writeFile(c,u),t.info("package.json file created successfully."),e){let d=l.join(o,"tsconfig.json");await p.writeFile(d,E),t.info("tsconfig.json file created successfully.")}}catch(r){t.error("Error writing JSON files:",r)}}function w(e){typeof e=="string"&&(t.error(e),process.exit(1)),e instanceof Error&&(t.error(e.message),process.exit(1)),t.error("Something went wrong. Please try again."),process.exit(1)}var z=g.object({cwd:g.string(),yes:g.boolean(),name:g.optional(g.string())}),K=[{name:"javascript",label:"JavaScript"},{name:"docker",label:"Docker"},{name:"composite",label:"Composite"}],$=new D().name("init").description("initialize your project and install dependencies").option("-y, --yes","skip confirmation prompt.",!1).option("-c, --cwd <cwd>","the working directory. defaults to the current directory.",process.cwd()).option("-n, --name <name>","the name of the github action.","").action(async e=>{try{let o=z.parse(e),n=_.resolve(o.cwd);Y(n)||(t.error(`The path ${n} does not exist. Please try again.`),process.exit(1));let r=await W(n),s=r.custom_action==="javascript",i=r.custom_action==="docker",y=r.custom_action==="composite";if(s){let m=await v(s);if(t.info(`Selected Packages: ${k.green(m)}`),m?.length||(t.warn("No packages selected. Exiting."),process.exit(0)),!o.yes){let{proceed:a}=await h({type:"confirm",name:"proceed",message:"Ready to install components and dependencies. Proceed?",initial:!0});a||process.exit(0)}let u=V("Preparing action...").start(),c=_.join(o.cwd||process.cwd(),r.action_name);await b(c);let d=await j(n||c);process.chdir(c),await I(r.typescript,c,r.action_name);try{await J(d,["update"],{cwd:c}),t.info("Updated packages")}catch(a){w(a)}for(let a of m){u.text=`Installing ${a}...`;try{await J(d,[d==="npm"?"install":"add",a])}catch(N){w(N)}}u.succeed("Done.")}t.info(""),t.info(`${k.green("Success!")} Project initialization completed. You may now modify your action`),t.info("")}catch(o){console.log(o)}});async function W(e,o=!1){let n=i=>k.cyan(i),r=i=>/^[a-zA-Z0-9_-]+$/.test(i)?!0:(console.log("Invalid name. The name must not contain special characters or spaces, except for underscores and hyphens."),!1),s=await h([{type:"text",name:"action_name",message:"What is the name of your action? ",validate:i=>r(i)},{type:"select",name:"custom_action",message:`Which ${n("custom action")} would you like to use?`,choices:K.map(i=>({title:i.label,value:i.name}))},{type:i=>i==="javascript"?"toggle":null,name:"typescript",message:`Would you like to use ${n("TypeScript")} (recommended)?`,initial:!0,active:"yes",inactive:"no"}]);if(!o&&s.custom_action!=="javascript"){let{proceed:i}=await h({type:"confirm",name:"proceed",message:`Do you want to ${n("proceed")}. Proceed?`,initial:!0});i||process.exit(0)}return s}process.on("SIGINT",()=>process.exit(0));process.on("SIGTERM",()=>process.exit(0));async function H(){let e=await x(),o=new B().name("custom-gh-action").description("create custom github action").version(e.version||"1.0.0","-v, --version","display the version number");o.addCommand($),o.parse()}H();
+  }`,v=o=>`name: ${o}
+description: ${o}
+    
+runs:
+  using: 'docker'
+  main: 'Dockerfile'
+  args:
+    -`,_=`FROM alpine:latest
+
+ENTRYPOINT ['/entrypoint.sh']`,O=o=>`name: '${o}'
+description: '${o}'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Greeting
+      run: echo "Hello custom github action"
+      shell: bash
+      env:`;async function b(o,e,n){try{await l.writeFile(f.join(e,".gitignore"),m);let r=I(n),s=f.join(e,"action.yaml");await l.writeFile(s,r),t.info("action.yaml file created successfully.");let i=f.join(e,"src");await l.mkdir(i,{recursive:!0});let c='console.log("Hello custom github action");',a=f.join(e,"src",`${n}.${o?"ts":"js"}`);await l.writeFile(a,c),t.info(`src/${n}.${o?"ts":"js"} file created successfully.`);let u=o?j(n):C(n),L=f.join(e,"package.json");if(await l.writeFile(L,u),t.info("package.json file created successfully."),o){let Y=f.join(e,"tsconfig.json");await l.writeFile(Y,x),t.info("tsconfig.json file created successfully.")}}catch(r){t.error("Error writing files:",r)}}async function $(o,e,n){let r=await P();if(t.info(`Selected Packages: ${M.green(r)}`),!o.yes){let{proceed:a}=await B({type:"confirm",name:"proceed",message:"Ready to install components and dependencies. Proceed?",initial:!0});a||process.exit(0)}let s=U("Preparing action...").start(),i=Z.join(o.cwd||process.cwd(),e.action_name);await p(i);let c=await E(n);process.chdir(i),await b(e.typescript,i,e.action_name);try{await S(c,["update"],{cwd:i}),t.info("Updated packages")}catch(a){y(a)}if(r)for(let a of r){s.text=`Installing ${a}...`;try{await S(c,[c==="npm"?"install":"add",a])}catch(u){y(u)}}s.succeed("Done."),t.info(""),t.info(`${M.green("Success!")} Project initialization completed. You may now modify your action`),t.info("")}import q from"ora";import Q from"path";import{promises as w}from"fs";import h from"path";async function D(o,e){try{await w.writeFile(h.join(o,".gitignore"),m);let n=v(e),r=h.join(o,"action.yaml");await w.writeFile(r,n),t.info("action.yaml file created successfully.");let s=_,i=h.join(o,"Dockerfile");await w.writeFile(i,s),t.info("Dockerfile created successfully.")}catch(n){t.error("Error writing Dockerfile",n)}}import X from"chalk";async function F(o,e){let n=q("Preparing action...").start(),r=Q.join(o.cwd||process.cwd(),e.action_name);await p(r),process.chdir(r),await D(r,e.action_name),n.succeed("Done."),t.info(""),t.info(`${X.green("Success!")} Project initialization completed. You may now modify your action`),t.info("")}import oo from"ora";import k from"path";import{promises as J}from"fs";import eo from"chalk";async function N(o,e){let n=oo("Preparing action...").start(),r=k.join(o.cwd||process.cwd(),e.action_name);await p(r),process.chdir(r);try{await J.writeFile(k.join(r,".gitignore"),m);let s=O(e.action_name),i=k.join(r,"action.yaml");await J.writeFile(i,s),t.info("Composite action.yaml file created successfully.")}catch(s){t.error("Error writing Dockerfile",s)}n.succeed("Done."),t.info(""),t.info(`${eo.green("Success!")} Project initialization completed. You may now modify your action`),t.info("")}var co=d.object({cwd:d.string(),yes:d.boolean(),name:d.optional(d.string())}),ao=[{name:"javascript",label:"JavaScript"},{name:"docker",label:"Docker"},{name:"composite",label:"Composite"}],R=new ro().name("init").description("initialize your project and install dependencies").option("-y, --yes","skip confirmation prompt.",!1).option("-c, --cwd <cwd>","the working directory. defaults to the current directory.",process.cwd()).option("-n, --name <name>","the name of the github action.","").action(async o=>{try{let e=co.parse(o),n=no.resolve(e.cwd);to(n)||(t.error(`The path ${n} does not exist. Please try again.`),process.exit(1));let r=await po(n),s=r.custom_action==="javascript",i=r.custom_action==="docker",c=r.custom_action==="composite";s&&$(e,r,n),i&&F(e,r),c&&N(e,r)}catch(e){console.log(e)}});async function po(o,e=!1){let n=i=>so.cyan(i),r=i=>/^[a-zA-Z0-9_-]+$/.test(i)?!0:(console.log("Invalid name. The name must not contain special characters or spaces, except for underscores and hyphens."),!1);return await io([{type:"text",name:"action_name",message:"What is the name of your action? ",validate:i=>r(i)},{type:"select",name:"custom_action",message:`Which ${n("custom action")} would you like to use?`,choices:ao.map(i=>({title:i.label,value:i.name}))},{type:i=>i==="javascript"?"toggle":null,name:"typescript",message:`Would you like to use ${n("TypeScript")} (recommended)?`,initial:!0,active:"yes",inactive:"no"}])}process.on("SIGINT",()=>process.exit(0));process.on("SIGTERM",()=>process.exit(0));async function lo(){let o=await T(),e=new mo().name("custom-gh-action").description("create custom github action").version(o.version||"1.0.0","-v, --version","display the version number");e.addCommand(R),e.parse()}lo();
 //# sourceMappingURL=index.js.map

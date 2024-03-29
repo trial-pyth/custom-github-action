@@ -4,14 +4,13 @@ const dependencies = [
     "@octokit/core",
     "@actions/core",
     "@actions/github",
+    "jest",
     "axios",
     "node-fetch"
 ]
 
-export async function promptForComponents(isJavascript: boolean) {
-    if (!isJavascript) {
-        return; // No components prompt for non-JavaScript actions
-    }
+export async function promptForComponents() {
+
 
     const choices = dependencies.map((entry) => ({
         title: entry,
