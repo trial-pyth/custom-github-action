@@ -1,5 +1,11 @@
 # custom-gha-cli
 
+## 0.1.0
+
+### Minor Changes
+
+- Added sheband operator and bin key in package.json
+
 ## 0.0.4
 
 ### Patch Changes
