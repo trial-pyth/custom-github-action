@@ -5,13 +5,10 @@ import prompts from "prompts";
 import { z } from "zod";
 import { logger } from "../utils/logger";
 import chalk from "chalk";
-import { promptForComponents } from "../utils/prompt-for-components";
-import ora from "ora";
-import { prepareTargetDirectory } from "../utils/prepare-target-dir";
-import { execa } from "execa"
-import { getPackageManager } from "../utils/get-package-manager";
-import { writeJavascriptActionFiles } from "../utils/write-js-action-files";
-import { handleError } from "../utils/handle-error";
+import { TInitOptions } from "../types";
+import { handleJavascriptAction } from "../utils/handle-javascript-action";
+import { handleDockerAction } from "../utils/handle-docker-actions";
+import { handleCompositeAction } from "../utils/handle-composite-action";
 
 const initOptionsSchema = z.object({
   cwd: z.string(),
@@ -46,7 +43,7 @@ export const init = new Command()
   .option("-n, --name <name>", "the name of the github action.", "")
   .action(async (opts) => {
     try {
-      const options = initOptionsSchema.parse(opts);
+      const options: TInitOptions = initOptionsSchema.parse(opts);
       const cwd = path.resolve(options.cwd);
 
       // Ensure target directory exists.
@@ -60,78 +57,20 @@ export const init = new Command()
       const isJavascript = config.custom_action === "javascript";
       const isDocker = config.custom_action === "docker"
       const isComposite = config.custom_action === "composite"
-    
+
       if (isJavascript) {
-        const selectedComponents: string[] | undefined = await promptForComponents(isJavascript);
-        logger.info(`Selected Packages: ${chalk.green(selectedComponents)}`)
-
-        if (!selectedComponents?.length) {
-          logger.warn("No packages selected. Exiting.")
-          process.exit(0)
-        }
-
-        if (!options.yes) {
-          const { proceed } = await prompts({
-            type: "confirm",
-            name: "proceed",
-            message: `Ready to install components and dependencies. Proceed?`,
-            initial: true,
-          })
-
-          if (!proceed) {
-            process.exit(0)
-          }
-        }
-
-        const spinner = ora(`Preparing action...`).start()
-        const targetDir = path.join(
-          // Use provided cwd if available, otherwise default to process.cwd()
-          options.cwd || process.cwd(),
-          config.action_name
-        );
-        await prepareTargetDirectory(targetDir);
-        const packageManager = await getPackageManager(cwd || targetDir)
-
-        // Navigate into the target directory
-        process.chdir(targetDir);
-
-        // Write package.json and tsconfig.json if applicable
-        await writeJavascriptActionFiles(config.typescript, targetDir,config.action_name);
-
-        try {
-          await execa(packageManager, ["update"], { cwd: targetDir });
-          logger.info("Updated packages")
-        } catch (error) {
-          handleError(error)
-        }
-
-
-        // Installating selected 
-        for (const npm_package of selectedComponents) {
-          spinner.text = `Installing ${npm_package}...`;
-          try {
-            // Install package using execaCommand with target directory
-            await execa(
-              packageManager,
-              [
-                packageManager === "npm" ? "install" : "add",
-                npm_package,
-              ]
-            )
-          } catch (error) {
-            handleError(error)
-          }
-        }
-        spinner.succeed(`Done.`)
+        handleJavascriptAction(options, config, cwd)
       }
 
-      logger.info("");
-      logger.info(
-        `${chalk.green(
-          "Success!"
-        )} Project initialization completed. You may now modify your action`
-      );
-      logger.info("");
+      if (isDocker) {
+        handleDockerAction(options, config)
+      }
+
+      if (isComposite) {
+        handleCompositeAction(options, config)
+      }
+
+
     } catch (error) {
       console.log(error);
     }
@@ -180,22 +119,5 @@ export async function promptForConfig(cwd: string, skip = false) {
       inactive: "no",
     }
   ]);
-
-
-  if (!skip && options.custom_action !== "javascript") {
-    const { proceed } = await prompts({
-      type: "confirm",
-      name: "proceed",
-      message: `Do you want to ${highlight(
-        "proceed"
-      )}. Proceed?`,
-      initial: true,
-    })
-
-    if (!proceed) {
-      process.exit(0)
-    }
-  }
-
   return options;
 }
