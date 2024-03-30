@@ -1,4 +1,4 @@
-# custom-gha-cli
+# [custom-gha-cli](https://www.npmjs.com/package/custom-gha-cli)
 
 A CLI for creating custom github actions: 
 - `Docker` 
