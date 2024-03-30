@@ -1,5 +1,12 @@
 # custom-gha-cli
 
+## 0.1.1
+
+### Patch Changes
+
+- added readme and instructions
+- 1413cbb: Updated README with more details
+
 ## 0.1.0
 
 ### Minor Changes
