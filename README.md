@@ -91,5 +91,7 @@ runs:
       env:
 ```
 
-
 ## Example
+
+<img src="https://raw.githubusercontent.com/trial-pyth/custom-github-action/main/img/cli1.PNG" />
+<img src="https://raw.githubusercontent.com/trial-pyth/custom-github-action/main/img/cli2.PNG" />
