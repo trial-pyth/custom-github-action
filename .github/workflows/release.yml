@@ -43,7 +43,6 @@ jobs:
         with:
           commit: "chore(release): version packages"
           title: "chore(release): version packages"
-          version: node .github/changeset-version.js
           publish: pnpm run build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
