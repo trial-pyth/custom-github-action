@@ -1,6 +1,6 @@
 {
   "name": "custom-gha-cli",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Create custom github actions with folder structure and  dependencies in a single directory",
   "publishConfig": {
     "access": "public"
