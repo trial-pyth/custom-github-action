@@ -22,6 +22,9 @@
     "actions",
     "cli"
   ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "type": "module",
   "exports": "./dist/index.js",
   "bin": "./dist/index.js",
