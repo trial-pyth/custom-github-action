@@ -5,7 +5,7 @@ import prompts from "prompts";
 import { z } from "zod";
 import { logger } from "../utils/logger";
 import chalk from "chalk";
-import { TInitOptions } from "../types";
+import { type TInitOptions } from "../types";
 import { handleJavascriptAction } from "../utils/handle-javascript-action";
 import { handleDockerAction } from "../utils/handle-docker-actions";
 import { handleCompositeAction } from "../utils/handle-composite-action";
