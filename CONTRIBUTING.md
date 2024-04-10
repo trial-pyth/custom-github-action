@@ -41,7 +41,7 @@ pnpm install
 
 ## Documentation
 
-Documentation is written using [MDX](https://mdxjs.com). You can find the documentation files in the `apps/www/content/docs` directory.
+Documentation is written using [MDX](https://mdxjs.com).
 
 ## Commit Convention
 
