@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in contributing to customg-gha-cli. We're happy to have you here.
+Thanks for your interest in contributing to custom-gha-cli. We're happy to have you here.
 
 Please take a moment to review this document before submitting your first pull request. We also strongly recommend that you check for open issues and pull requests to see if someone else is working on something similar.
 
@@ -73,7 +73,7 @@ https://www.conventionalcommits.org/ or check out the
 
 ## CLI
 
-The `customg-gha-action` package is a CLI for adding components to your project. You can find the documentation for the CLI [here](https://ui.shadcn.com/docs/cli).
+The `customg-gha-action` package is a CLI for adding components to your project. You can find the documentation for the CLI [here](https://ui.shadcn.com/docs/cli](https://github.com/trial-pyth/custom-github-action?tab=readme-ov-file#custom-gha-cli).
 
 Any changes to the CLI should be made in the `root` directory. If you can, it would be great if you could add tests for your changes.
 
